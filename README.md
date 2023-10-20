@@ -935,11 +935,11 @@ library(mapview)
 library(leaflet)
 library(sf)
 
-Pinar.Yunquera<-st_read("E:/MAVARO/Libro_GEOFOREST/Capitulo_04/IFN/Pinar.Yunquera.shp")
+Pinar.Yunquera<-st_read("C:/DESCARGA/Pinar.Yunquera.shp")
 
-pinsapo<-st_read("E:/MAVARO/Libro_GEOFOREST/Capitulo_04/IFN/pinsapo3.shp")
+pinsapo<-st_read("C:/DESCARGA/pinsapo.shp")
 
-resumen.pinsapo<-st_read("E:/MAVARO/Libro_GEOFOREST/Capitulo_04/IFN/resumen.pinsapo.shp")
+resumen.pinsapo<-st_read("C:/DESCARGA/resumen.pinsapo.shp")
 
 ui <- dashboardPage(
   dashboardHeader(title = "Análisis de datos del IFN en Pinar de Yunquera",
@@ -1015,5 +1015,5 @@ Que dará como resultado el siguiente tablero:
 
 ![](./Auxiliares/Dashboard.png)
 
-Parece que, en altura las mayores diferencias suceden en la zona sur y sur-oeste, mientras que es justo ahí, donde menos crecimiento diametral se produce. Es probable que, al estar bajo una mayor presión de densidad y competencia en dicha zona los coeficientes de esbeltez del arbolado hayan aumentado, produciendo una masa frágil y poco estable a eventos de vientos extremos.
+Parece que, en altura las mayores diferencias suceden en la zona este, coincidiendo con una mayor presión de densidad y competencia. Los incrementos radiales han sido medios por lo que es probable que los coeficientes de esbeltez hayan aumentado, produciendo una masa frágil y poco estable a eventos de vientos extremos. E inversamente, en la zona central del monte, donde se han producido los menores crecimientos en altura, las masas son baja densidad. Por otro lado, el mayor crecimiento diametral se produce en la zona sur-oeste con baja densidad y crecimientos medios en altura. 
 
