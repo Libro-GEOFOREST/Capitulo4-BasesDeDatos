@@ -830,7 +830,7 @@ correlacion.diametros$estimate
 
 ```r annotate
 ##        rho 
-## -0.03614458 
+## -0.3493976 
 ```
 
 ```r
@@ -839,38 +839,10 @@ correlacion.diametros$p.value
 ```
 
 ```r annotate
-## [1] 0.9322879
+## [1] 0.3962443
 ```
 
-Ninguna de las correlaciones con la densidad parece tener significancia estadística (*p-valores* por encima de 0.05). Sin embargo, este bajo valor es probable que se deba a la muestra tan pequeña de parcelas en la que se ha empleado, tan sólo 8 parcelas (Ver el número de registros de la tabla *resumen.pinsapo*). Sería necesario aumentar la superficie de estudio y, por tanto, el número de parcelas, para contrastar los resultados, ya que la asociación de interdependencia esperada responde a una hipótesis plausible y lógica contrastada en el mundo forestal. De hecho, cuando se emplea una combinación de las variables resulta en una correlación significativa (*p-valor* inferior a 0.05).
-
-```r
-#Test de correlación entre las 3 variables
-correlacion.H.DN.N<-cor.test(resumen.pinsapo$Dif.H,
-                              resumen.pinsapo$Npies_parc*(resumen.pinsapo$Dif.DN^2),
-                              method="spearman")
-
-#Correlación entre las 3 variables
-correlacion.H.DN.N$estimate
-```
-
-```r annotate
-##        rho 
-## 0.7349398
-```
-
-```r
-#Significancia de la correlación entre las 3 variables
-correlacion.H.DN.N$estimate
-```
-
-```r annotate
-## [1] 0.03779136
-```
-
-Se puede entender de la correlación anterior que a mayor densidad de pies y mayor crecimiento en superficie de tronco ocupada por ellos (entendiendo el cuadrado de la diferencia entre los diámetros como aproximación al crecimiento en área basimétrica), los árboles de la parcela han crecido más en altura. Gráficamente se puede representar a través de un diagrama de dispersión.
-
-![](./Auxiliares/cor.png)
+Ninguna de las correlaciones con la densidad parece tener significancia estadística (*p-valores* por encima de 0.05). Sin embargo, este bajo valor es probable que se deba a la muestra tan pequeña de parcelas en la que se ha empleado, tan sólo 8 parcelas (Ver el número de registros de la tabla *resumen.pinsapo*). Sería necesario aumentar la superficie de estudio y, por tanto, el número de parcelas, para contrastar los resultados, ya que la asociación de interdependencia esperada responde a una hipótesis plausible y lógica contrastada en el mundo forestal. 
 
 ### 2.4. Visualización de los datos
 
@@ -940,60 +912,108 @@ segments(pinsapo$DN.IFN3,pinsapo$HT,
 
 ### 2.5. Los datos contando historias...
 
-Espacialmente, se puede visualizar dónde han ocurrido los mayores cambios tanto en diámetros,... 
+Espacialmente, se puede visualizar dónde han ocurrido los mayores cambios tanto en diámetros, como en alturas dentro del monte a través de un dashboard que exponga el análisis realizado.
 
-```{r warning=FALSE}
-opar<-par()
+Primero, se guardan la tabla resumen de pinsapo y la capa del monte que se han generado en los procesos anteriores.
 
-#Gráfico de la geometría del monte
-plot(st_geometry(Pinar.Yunquera),axes=TRUE)
+```r
+st_write(st_zm(Pinar.Yunquera),"C:/DESCARGA/Pinar.Yunquera.shp") #Adaptar a la ruta que se vaya a emplear en el equipo
 
-#Localización de las parcelas de pinsapo según su crecimiento en dap
-plot(resumen.pinsapo["Dif.DN"], breaks=c(0,30,60,90),
-     pal = sf.colors(3),
-     pch=19,add=TRUE)
+pinsapo<-pinsapo[,c(1,2,70:105)]
 
-#Leyenda
-legend("bottomright",
-       legend=c("0-30","30-60","60-100"),
-       col=rev(sf.colors(3)),
-       lty=1,cex=0.85, box.lty=0)
-par(opar)
+st_write(pinsapo,"C:/DESCARGA/pinsapo.shp") #Adaptar a la ruta que se vaya a emplear en el equipo
+
+st_write(resumen.pinsapo,"C:/DESCARGA/resumen.pinsapo.shp") #Adaptar a la ruta que se vaya a emplear en el equipo
 ```
 
-..., como en alturas.
+Y ahora se construye una aplicación de tablero que llamará a estás tablas y mostrará los resultados. Para crearla, se va a seguir el guión mostrado [aquí](https://bookdown.org/eljorgehdz/shiny_tuto/shiny_tuto.html)
 
-```{r warning=FALSE}
-#Gráfico de la geometría del monte
-plot(st_geometry(Pinar.Yunquera),axes=TRUE)
+```r
+library(shiny)
+library(shinydashboard)
+library(mapview)
+library(leaflet)
+library(sf)
 
-#Localización de las parcelas de pinsapo según su crecimiento en altura
-plot(resumen.pinsapo["Dif.H"], breaks=c(0,1,1.5,2,2.5,3),
-     pal = sf.colors(5),
-     pch=19,add=TRUE)
+Pinar.Yunquera<-st_read("E:/MAVARO/Libro_GEOFOREST/Capitulo_04/IFN/Pinar.Yunquera.shp")
 
-#Leyenda
-legend("bottomright",
-       legend=c("0-1","1-1.5","1.5-2","2-2.5","2.5-3"),
-       col=rev(sf.colors(5)),
-       lty=1,cex=0.85, box.lty=0)
-par(opar)
+pinsapo<-st_read("E:/MAVARO/Libro_GEOFOREST/Capitulo_04/IFN/pinsapo3.shp")
+
+resumen.pinsapo<-st_read("E:/MAVARO/Libro_GEOFOREST/Capitulo_04/IFN/resumen.pinsapo.shp")
+
+ui <- dashboardPage(
+  dashboardHeader(title = "Análisis de datos del IFN en Pinar de Yunquera",
+                  titleWidth =500),
+  dashboardSidebar(disable = TRUE),
+  dashboardBody(
+    #Gráficos del dashboard
+    box(title = "Distribución de crecimiento en DN",
+        solidHeader = TRUE,status = "primary",
+        leafletOutput("mapa", height = 380)),
+    box(title = "Distribución de crecimiento en H",
+        solidHeader = TRUE,status = "primary",
+        leafletOutput("mapa2", height = 380)),
+    box(title = "Distribución de densidades",
+        solidHeader = TRUE,status = "primary",
+        leafletOutput("mapa3", height = 380)),
+    box(title = "Relaciones alométricas DN/H según densidad",
+        solidHeader = TRUE,status = "primary",
+        plotOutput("plot1", height = 380)),
+  )
+)
+
+server <- function(input, output) {
+
+  output$mapa <- renderLeaflet({
+    a<-mapview(Pinar.Yunquera)+mapview(resumen.pinsapo,zcol = "Dif_DN")
+    a@map
+    
+  })
+  output$mapa2 <- renderLeaflet({
+    b<-mapview(Pinar.Yunquera)+mapview(resumen.pinsapo,zcol = "Dif_H")
+    b@map
+    
+  })
+  output$mapa3 <- renderLeaflet({
+    c<-mapview(Pinar.Yunquera)+mapview(resumen.pinsapo,zcol = "Nps_prc")
+    c@map
+    
+  })
+  output$plot1 <- renderPlot({
+    plot(0,0,col = "white",
+         xlim=c(80,900),ylim=c(0,21),main="Crecimientos.Pinsapo",
+         xlab="dap (mm)", ylab="altura (m)")
+    segments(pinsapo$DN_IFN3[which(pinsapo$Dif_DN<20)],
+             pinsapo$HT[which(pinsapo$Dif_DN<20)],
+             pinsapo$DN_IF2[which(pinsapo$Dif_DN<20)],
+             pinsapo$HT_IFN2[which(pinsapo$Dif_DN<20)],
+             col="orange")
+    segments(pinsapo$DN_IFN3[which(pinsapo$Dif_DN>=20&pinsapo$Dif_DN<50)],
+             pinsapo$HT[which(pinsapo$Dif_DN>=20&pinsapo$Dif_DN<50)],
+             pinsapo$DN_IF2[which(pinsapo$Dif_DN>=20&pinsapo$Dif_DN<50)],
+             pinsapo$HT_IFN2[which(pinsapo$Dif_DN>=20&pinsapo$Dif_DN<50)],
+             col="red")
+    segments(pinsapo$DN_IFN3[which(pinsapo$Dif_DN>=50)],
+             pinsapo$HT[which(pinsapo$Dif_DN>=50)],
+             pinsapo$DN_IF2[which(pinsapo$Dif_DN>=50)],
+             pinsapo$HT_IFN2[which(pinsapo$Dif_DN>=50)],
+             col="brown")
+    legend("bottomright",legend=c("Crecimiento DN < 20 mm","20 mm < Crecimiento DN < 50 mm",
+                                  "Crecimiento DN > 50 mm"),
+           col=c("orange","red","brown"),lty=c(1,1,1),cex=0.75,
+           box.lty=0)
+  })
+}
+
+
+
+# Run the application 
+shinyApp(ui = ui, server = server)
 ```
+
+Que dará como resultado el siguiente tablero:
+
+![](./Auxiliares/Dashboard.png)
 
 Parece que, en altura las mayores diferencias suceden en la zona sur y sur-oeste, mientras que es justo ahí, donde menos crecimiento diametral se produce. Es probable que, al estar bajo una mayor presión de densidad y competencia en dicha zona los coeficientes de esbeltez del arbolado hayan aumentado, produciendo una masa frágil y poco estable a eventos de vientos extremos.
 
-```{r warning=FALSE}
-#Gráfico de la geometría del monte
-plot(st_geometry(Pinar.Yunquera),axes=TRUE)
-
-#Localización de las parcelas de pinsapo según su crecimiento en altura
-plot(resumen.pinsapo["Npies_parc"], breaks=c(0,200,400,600,800),
-     pal = sf.colors(4),
-     pch=19,add=TRUE)
-
-#Leyenda
-legend("bottomright",
-       legend=c("0-200","200-400","400-600","600-800"),
-       col=rev(sf.colors(4)),
-       lty=1,cex=0.85, box.lty=0)
-```
