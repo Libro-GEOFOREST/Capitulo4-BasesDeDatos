@@ -859,7 +859,7 @@ segments(Pies.monte.IFN$DN.IFN3,Pies.monte.IFN$HT,
          col=rgb(0,0,0,0.35))
 ```
 
-![](./Auxiliares/Crecimientos.png)
+![](./Auxiliares/Cremientos.png)
 
 Si se particulariza a nivel especie, se pueden intuir dinámicas distintas.
 
@@ -897,7 +897,7 @@ legend("bottomright",legend=c("Pinus sylvestris","Pinus halepensis",
        box.lty=0)
 ```
 
-![](./Auxiliares/Crecimientos2.png)
+![](./Auxiliares/Cremientos2.png)
 
 La especie que parece mostrar mayor variabilidad de comportamiento en su crecimiento es el pinsapo. Por eso, se va a particularizar para dicha especie.
 
@@ -910,7 +910,7 @@ segments(pinsapo$DN.IFN3,pinsapo$HT,
          col=rgb(0,0,0,0.35))
 ```
 
-![](./Auxiliares/Crecimientos3.png)
+![](./Auxiliares/Cremientos3.png)
 
 ### 2.5. Los datos contando historias...
 
