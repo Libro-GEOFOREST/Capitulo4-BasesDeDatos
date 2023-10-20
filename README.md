@@ -842,7 +842,7 @@ correlacion.diametros$p.value
 ## [1] 0.9322879
 ```
 
-Ninguna de las correlaciones con la densidad parece tener significancia estadística (*p-valores* por encima de 0.05). Sin embargo, este bajo valor es probable que se deba a la muestra tan pequeña de parcelas en la que se ha empleado. Sería necesario aumentar la superficie de estudio y, por tanto, el número de parcelas, para contrastar los resultados, ya que la asociación de interdependencia esperada responde a una hipótesis plausible y lógica contrastada en el mundo forestal. De hecho, cuando se emplea una combinación de las variables resulta en una correlación significativa (*p-valor* inferior a 0.05).
+Ninguna de las correlaciones con la densidad parece tener significancia estadística (*p-valores* por encima de 0.05). Sin embargo, este bajo valor es probable que se deba a la muestra tan pequeña de parcelas en la que se ha empleado, tan sólo 8 parcelas (Ver el número de registros de la tabla *resumen.pinsapo*). Sería necesario aumentar la superficie de estudio y, por tanto, el número de parcelas, para contrastar los resultados, ya que la asociación de interdependencia esperada responde a una hipótesis plausible y lógica contrastada en el mundo forestal. De hecho, cuando se emplea una combinación de las variables resulta en una correlación significativa (*p-valor* inferior a 0.05).
 
 ```r
 #Test de correlación entre las 3 variables
@@ -868,9 +868,9 @@ correlacion.H.DN.N$estimate
 ## [1] 0.03779136
 ```
 
-Se puede entender de la correlación anterior que a mayor densidad de pies y mayor crecimiento en superficie de tronco ocupada por ellos (entendiendo el cuadrado de la diferencia entreo los diámetros como aproximación al crecimiento en área basimétrica), los árboles de la parcela han crecido más en altura. Gráficamente se puede representar a través de un diagrama de dispersión.
+Se puede entender de la correlación anterior que a mayor densidad de pies y mayor crecimiento en superficie de tronco ocupada por ellos (entendiendo el cuadrado de la diferencia entre los diámetros como aproximación al crecimiento en área basimétrica), los árboles de la parcela han crecido más en altura. Gráficamente se puede representar a través de un diagrama de dispersión.
 
-
+![](./Auxiliares/cor.png)
 
 ### 2.4. Visualización de los datos
 
@@ -923,6 +923,8 @@ legend("bottomright",legend=c("Pinus sylvestris","Pinus halepensis",
        box.lty=0)
 ```
 
+![](./Auxiliares/Crecimientos2.png)
+
 La especie que parece mostrar mayor variabilidad de comportamiento en su crecimiento es el pinsapo. Por eso, se va a particularizar para dicha especie.
 
 ```{r }
@@ -934,6 +936,7 @@ segments(pinsapo$DN.IFN3,pinsapo$HT,
          col=rgb(0,0,0,0.35))
 ```
 
+![](./Auxiliares/Crecimientos3.png)
 
 ### 2.5. Los datos contando historias...
 
